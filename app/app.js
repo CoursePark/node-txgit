@@ -1,17 +1,20 @@
 'use strict';
 
 module.exports = function () {
-	var express = require('express');
-	var app = express();
-	var Git = require('nodegit');
-	var fs = require('fs');
+	var bodyParser = require('body-parser');
 	var exec = require('child_process').exec;
+	var express = require('express');
+	var fs = require('fs');
+	var path = require('path');
 	var q = require('q');
+	var Transifex = require('transifex');
 	
-	var clone, cloneError;
+	var cloned, cloneError, lastAttempt;
 	var cloneDir = __dirname + '/clone';
 	
-	app.set('views', __dirname + '/views');
+	var app = express();
+	app.use(bodyParser.json());
+	app.set('views', path.join(__dirname, '/views'));
 	app.set('view engine', 'ejs');
 	app.enable('trust proxy');
 	
@@ -38,47 +41,110 @@ module.exports = function () {
 	 * credentials provided in the ENV. First we need to make sure there is no
 	 * left over clone, we want to start fresh whenever the server is started.
 	 */
-	clear()
-		.then(function () {
-			Git
-				.Clone(
-					process.env.GIT_REPO_URL,
-					cloneDir,
-					{
-						remoteCallbacks: {
-							credentials: function () {
-								return Git.Cred.userpassPlaintextNew(process.env.GIT_USERNAME, process.env.GIT_PASSWORD);
-							},
-							certificateCheck: function () {
-								/*
-								 * Github will fail cert check on some OSX machines
-								 * this overrides that check
-								 */
-								return 1;
-							}
-						}
-					}
-				)
-				.then(function (repo) {
-					clone = repo;
-				})
-				.catch(function (err) {
-					cloneError = err;
-				})
-				.done()
-			;
-		})
-	;
+	var checkout = function () {
+		return clear()
+			.then(function () {
+				var defer = q.defer();
+				
+				if (process.env.GIT_REPO_URL) {
+					exec('git clone ' + process.env.GIT_REPO_URL + ' ' + cloneDir, function (err) {
+						err ? defer.reject(err) : defer.resolve();
+					});
+				}
+				else {
+					defer.reject(new Error('Missing required GIT_REPO_URL.'));
+				}
+				
+				return defer.promise;
+			})
+			.then(function () {
+				cloned = true;
+			})
+			.catch(function (err) {
+				console.error(err);
+				cloneError = err;
+			})
+		;
+	};
+	
+	
+	// Initial checkout of repo
+	checkout().done();
 	
 	app.get('/', function (req, res) {
 		res.render('index', {
 			host: req.get('host'),
-			GIT_USERNAME: process.env.GIT_USERNAME,
-			GIT_PASSWORD: Boolean(process.env.GIT_PASSWORD),
+			TRANSIFEX_USERNAME: process.env.TRANSIFEX_USERNAME,
+			TRANSIFEX_PASSWORD: Boolean(process.env.TRANSIFEX_PASSWORD),
 			GIT_REPO_URL: process.env.GIT_REPO_URL,
-			clone: clone,
-			cloneError: cloneError
+			cloned: cloned,
+			cloneError: cloneError,
+			lastAttempt: lastAttempt
 		});
+	});
+	
+	app.post('/transifex', function (req, res, next) {
+		// Do a fresh checkout every time (lazyman reset)
+		checkout()
+			.then(function () {
+				// If body is empty, everything is wrong!
+				if (Object.keys(req.body).length === 0) {
+					lastAttempt = false;
+					return res.status(400).send('Invalid body.');
+				}
+				
+				// Must provide us with all the information we need
+				if (!req.body.project || !req.body.resource || !req.body.language) {
+					lastAttempt = false;
+					return res.status(400).send('Required params missing. Must have "project", "resource" and "language".');
+				}
+				
+				// TODO: validate transifex signature
+				
+				// Setup transifex connection
+				var transifex = new Transifex({
+					project_slug: req.body.project,
+					credential: process.env.TRANSIFEX_USERNAME + ':' + process.env.TRANSIFEX_PASSWORD
+				});
+				
+				// Try to get the updated translations
+				transifex.translationInstanceMethod(req.body.project, req.body.resource, req.body.language, {mode: 'reviewed'}, function (err, data) {
+					if (err) {
+						lastAttempt = false;
+						return next(err);
+					}
+					
+					var fileName = req.body.language + process.env.LOCALE_EXT;
+					var localeFile = path.join(cloneDir, process.env.LOCALE_DIR, fileName);
+					fs.writeFile(localeFile, data, function (err) {
+						if (err) {
+							lastAttempt = false;
+							return next(err);
+						}
+						
+						// Commit updated translation file to repo and push it to remote
+						exec('cd ' + cloneDir + ' && git add ' + localeFile + ' && git commit -m "Updated ' + fileName + ' with Transifex" && git push ' + process.env.GIT_REPO_URL + ' master', function (err) {
+							if (err) {
+								lastAttempt = false;
+								return next(err);
+							}
+							
+							lastAttempt = fileName;
+							console.log('Updated ' + fileName);
+							res.status(204).end();
+						});
+					});
+				});
+			})
+			.done()
+		;
+	});
+	
+	// Catch-all error handler
+	app.use(function (err, req, res, next) {
+		console.error(err);
+		res.status(500).send('Internal server error.');
+		next();
 	});
 	
 	return app;

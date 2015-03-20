@@ -38,7 +38,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<h4>
-						<% if (GIT_USERNAME) { %>
+						<% if (TRANSIFEX_USERNAME) { %>
 							<span class="label label-success">Success</span>
 						<% } else { %>
 							<span class="label label-danger">Missing</span>
@@ -46,14 +46,14 @@
 						<div class="visible-xs">
 							<br>
 						</div>
-						GIT_USERNAME
+						TRANSIFEX_USERNAME
 					</h4>
 				</div>
 				<div class="col-md-6">
-					<% if (GIT_USERNAME) { %>
-						<h4><small>Set to <span class="label label-default"><%= GIT_USERNAME %></span>.</small></h4>
+					<% if (TRANSIFEX_USERNAME) { %>
+						<h4><small>Set to <span class="label label-default"><%= TRANSIFEX_USERNAME %></span>.</small></h4>
 					<% } else { %>
-						<h4><small>You still need to set the <span class="label label-default">GIT_USERNAME</span> ENV variable.</small></h4>
+						<h4><small>You still need to set the <span class="label label-default">TRANSIFEX_USERNAME</span> ENV variable.</small></h4>
 					<% } %>
 				</div>
 			</div>
@@ -61,7 +61,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<h4>
-						<% if (GIT_PASSWORD) { %>
+						<% if (TRANSIFEX_PASSWORD) { %>
 							<span class="label label-success">Success</span>
 						<% } else { %>
 							<span class="label label-danger">Missing</span>
@@ -69,14 +69,14 @@
 						<div class="visible-xs">
 							<br>
 						</div>
-						GIT_PASSWORD
+						TRANSIFEX_PASSWORD
 					</h4>
 				</div>
 				<div class="col-md-6">
-					<% if (GIT_PASSWORD) { %>
+					<% if (TRANSIFEX_PASSWORD) { %>
 						<h4><small>ENV variable is set, but it's a secret!</small></h4>
 					<% } else { %>
-						<h4><small>You still need to set the <span class="label label-default">GIT_PASSWORD</span> ENV variable.</small></h4>
+						<h4><small>You still need to set the <span class="label label-default">TRANSIFEX_PASSWORD</span> ENV variable.</small></h4>
 					<% } %>
 				</div>
 			</div>
@@ -97,7 +97,7 @@
 				</div>
 				<div class="col-md-6">
 					<% if (GIT_REPO_URL) { %>
-						<h4><small>Set to <span class="label label-default"><%= GIT_REPO_URL %></span>.</small></h4>
+						<h4><small>ENV variable is set, but it's a secret!</small></h4>
 					<% } else { %>
 						<h4><small>You still need to set the <span class="label label-default">GIT_REPO_URL</span> ENV variable.</small></h4>
 					<% } %>
@@ -109,7 +109,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<h4>
-						<% if (clone) { %>
+						<% if (cloned) { %>
 							<span class="label label-success">Success</span>
 						<% } else if (cloneError) { %>
 							<span class="label label-danger">Error</span>
@@ -123,13 +123,39 @@
 					</h4>
 				</div>
 				<div class="col-md-6">
-					<% if (clone) { %>
+					<% if (cloned) { %>
 						<h4><small>Repo has successfully been cloned.</small></h4>
 					<% } else if (cloneError) { %>
-						<h4><small>There was an error trying to clone <span class="label label-default"><%= GIT_REPO_URL %></span>.</small></h4>
-						<pre><%= cloneError %></pre>
+						<h4><small>There was an error trying to clone the repo. Check your server logs for more information.</small></h4>
 					<% } else { %>
 						<h4><small>The repo cloning is currently in progress. <a href="#" onclick="location.reload()">Refresh to update status.</a></small></h4>
+					<% } %>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<h4>
+						<% if (typeof lastAttempt === 'string') { %>
+							<span class="label label-success">Success</span>
+						<% } else if (lastAttempt === false) { %>
+							<span class="label label-danger">Error</span>
+						<% } else { %>
+							<span class="label label-warning">No Attempts</span>
+						<% } %>
+						<div class="visible-xs">
+							<br>
+						</div>
+						Last Attempt Status
+					</h4>
+				</div>
+				<div class="col-md-6">
+					<% if (typeof lastAttempt === 'string') { %>
+						<h4><small>The lastest update was for <span class="label label-default"><%= lastAttempt %></span>.</small></h4>
+					<% } else if (lastAttempt === false) { %>
+						<h4><small>There was an error with the last update attempt. Check your server logs for more information.</small></h4>
+					<% } else { %>
+						<h4><small>No update has been attempted yet.</h4>
 					<% } %>
 				</div>
 			</div>

@@ -17,10 +17,11 @@
 		"test": "grunt && mocha"
 	},
 	"dependencies": {
+		"body-parser": "^1.12.2",
 		"express": "^4.12.3",
 		"ejs": "^2.3.1",
-		"nodegit": "^0.3.3",
-		"q": "^1.1.2"
+		"q": "^1.1.2",
+		"transifex": "^1.4.3"
 	},
 	"devDependencies": {
 		"chai": "^2.1.2",
@@ -30,6 +31,7 @@
 		"load-grunt-tasks": "^1.0.0",
 		"lodash": "3.5.0",
 		"mocha": "^2.2.1",
+		"mockery": "^1.4.0",
 		"supertest": "^0.15.0"
 	}
 }

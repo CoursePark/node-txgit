@@ -3,13 +3,30 @@
 var expect = require('chai').expect;
 var request = require('supertest');
 var _ = require('lodash');
+var mockery = require('mockery');
 
 describe('Index', function () {
 	var app, error, response;
 	
 	beforeEach(function () {
+		mockery.enable({
+			warnOnReplace: false,
+			warnOnUnregistered: false
+		});
+		mockery.registerMock('child_process', {
+			exec: function (cmd, callback) {
+				callback();
+			}
+		});
+		
 		response = undefined;
 		app = require('../app/app')();
+		
+		delete process.env.TRANSIFEX_USERNAME;
+		delete process.env.TRANSIFEX_PASSWORD;
+		process.env.GIT_REPO_URL = 'https://example.com/repo';
+		delete process.env.LOCALE_DIR;
+		delete process.env.LOCALE_EXT;
 	});
 	
 	// Urls to call
@@ -35,37 +52,37 @@ describe('Index', function () {
 	
 	// Possible ENV settings
 	var envs = {
-		GIT_USERNAME: [
+		TRANSIFEX_USERNAME: [
 			{
 				value: '',
 				specs: function () {
-					it('should complain about missing GIT_USERNAME', function () {
-						expect(response.text).to.contain('You still need to set the <span class="label label-default">GIT_USERNAME</span> ENV variable.');
+					it('should complain about missing TRANSIFEX_USERNAME', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">TRANSIFEX_USERNAME</span> ENV variable.');
 					});
 				}
 			},
 			{
 				value: 'chesleybrown',
 				specs: function () {
-					it('should say GIT_USERNAME is okay and show what it is set to', function () {
+					it('should say TRANSIFEX_USERNAME is okay and show what it is set to', function () {
 						expect(response.text).to.contain('Set to <span class="label label-default">chesleybrown</span>.');
 					});
 				}
 			}
 		],
-		GIT_PASSWORD: [
+		TRANSIFEX_PASSWORD: [
 			{
 				value: '',
 				specs: function () {
-					it('should complain about missing GIT_PASSWORD', function () {
-						expect(response.text).to.contain('You still need to set the <span class="label label-default">GIT_PASSWORD</span> ENV variable.');
+					it('should complain about missing TRANSIFEX_PASSWORD', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">TRANSIFEX_PASSWORD</span> ENV variable.');
 					});
 				}
 			},
 			{
 				value: 'password',
 				specs: function () {
-					it('should say GIT_PASSWORD is okay and show what it is set to', function () {
+					it('should say TRANSIFEX_PASSWORD is okay and show what it is set to', function () {
 						expect(response.text).to.contain('ENV variable is set, but it\'s a secret!');
 					});
 				}
@@ -102,5 +119,9 @@ describe('Index', function () {
 				});
 			});
 		});
+	});
+	
+	after(function () {
+		mockery.disable();
 	});
 });
