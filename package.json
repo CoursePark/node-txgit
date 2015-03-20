@@ -1,0 +1,30 @@
+{
+	"name": "node-txgit",
+	"description": "Micro node app for listening to Transifex web hooks, automatically committing it to git and pushing to a remote.",
+	"version": "0.0.1",
+	"keywords": [
+		"bitbucket",
+		"git",
+		"transifex"
+	],
+	"license": "MIT",
+	"engines": {
+		"node": "0.10.35"
+	},
+	"scripts": {
+		"test": "mocha && grunt"
+	},
+	"dependencies": {
+		"express": "^4.12.3",
+		"ejs": "^2.3.1"
+	},
+	"devDependencies": {
+		"chai": "^2.1.2",
+		"grunt": "^0.4.5",
+		"grunt-cli": "^0.1.13",
+		"grunt-tabs4life": "^1.0.4",
+		"load-grunt-tasks": "^1.0.0",
+		"mocha": "^2.2.1",
+		"supertest": "^0.15.0"
+	}
+}
