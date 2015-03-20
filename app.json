@@ -1,0 +1,28 @@
+{
+	"name": "node-txgit",
+	"description": "Micro node app for listening to Transifex web hooks, automatically committing it to git and pushing to a remote.",
+	"repository": "https://github.com/CoursePark/node-txgit",
+	"keywords": ["node", "express", "bitbucket", "codeship"],
+	"env": {
+		"TRANSIFEX_USERNAME": {
+			"description": "Your Transifex username.",
+			"value": ""
+		},
+		"TRANSIFEX_PASSWORD": {
+			"description": "Your Transifex password.",
+			"value": ""
+		},
+		"GIT_REPO_URL": {
+			"description": "Your git repo url. Should include credentials if it's a private repo.",
+			"value": ""
+		},
+		"LOCALE_DIR": {
+			"description": "The directory where the locale files will be saved within the repo.",
+			"value": ""
+		},
+		"LOCALE_EXT": {
+			"description": "The extension you want to use for the translation file.",
+			"value": ".l20n"
+		}
+	}
+}
