@@ -2,6 +2,7 @@
 	"name": "node-txgit",
 	"description": "Micro node app for listening to Transifex web hooks, automatically committing it to git and pushing to a remote.",
 	"repository": "https://github.com/CoursePark/node-txgit",
+	"logo": "https://raw.githubusercontent.com/CoursePark/node-txgit/master/app/media/logo.png",
 	"keywords": ["node", "express", "bitbucket", "codeship"],
 	"env": {
 		"TRANSIFEX_USERNAME": {
