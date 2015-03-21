@@ -17,6 +17,7 @@ First just deploy a free instance of the app on heroku using the button then jus
 1. Set `TRANSIFEX_USERNAME` and `TRANSIFEX_PASSWORD` so the app can pull down the translations needed.
 1. Set `LOCALE_DIR` to the path relative to your repo where your want your locale files committed into.
 1. Set `LOCALE_EXT` to be the the file extention used for the locale files that are created.
+1. Set `GIT_NAME` and `GIT_EMAIL` which will be used when committing to the repo.
 
 # Running Locally
 
