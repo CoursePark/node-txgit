@@ -87,6 +87,42 @@ describe('Index', function () {
 					});
 				}
 			}
+		],
+		LOCALE_DIR: [
+			{
+				value: '',
+				specs: function () {
+					it('should complain about missing LOCALE_DIR', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">LOCALE_DIR</span> ENV variable.');
+					});
+				}
+			},
+			{
+				value: 'locale',
+				specs: function () {
+					it('should say LOCALE_DIR is okay and show what it is set to', function () {
+						expect(response.text).to.contain('Set to <span class="label label-default">locale</span>.');
+					});
+				}
+			}
+		],
+		LOCALE_EXT: [
+			{
+				value: '',
+				specs: function () {
+					it('should complain about missing LOCALE_EXT', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">LOCALE_EXT</span> ENV variable.');
+					});
+				}
+			},
+			{
+				value: '.l20n',
+				specs: function () {
+					it('should say LOCALE_EXT is okay and show what it is set to', function () {
+						expect(response.text).to.contain('Set to <span class="label label-default">.l20n</span>.');
+					});
+				}
+			}
 		]
 	};
 	

@@ -104,6 +104,52 @@
 				</div>
 			</div>
 			
+			<div class="row">
+				<div class="col-md-6">
+					<h4>
+						<% if (LOCALE_DIR) { %>
+							<span class="label label-success">Success</span>
+						<% } else { %>
+							<span class="label label-danger">Missing</span>
+						<% } %>
+						<div class="visible-xs">
+							<br>
+						</div>
+						LOCALE_DIR
+					</h4>
+				</div>
+				<div class="col-md-6">
+					<% if (LOCALE_DIR) { %>
+						<h4><small>Set to <span class="label label-default"><%= LOCALE_DIR %></span>.</small></h4>
+					<% } else { %>
+						<h4><small>You still need to set the <span class="label label-default">LOCALE_DIR</span> ENV variable.</small></h4>
+					<% } %>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<h4>
+						<% if (LOCALE_EXT) { %>
+							<span class="label label-success">Success</span>
+						<% } else { %>
+							<span class="label label-danger">Missing</span>
+						<% } %>
+						<div class="visible-xs">
+							<br>
+						</div>
+						LOCALE_EXT
+					</h4>
+				</div>
+				<div class="col-md-6">
+					<% if (LOCALE_EXT) { %>
+						<h4><small>Set to <span class="label label-default"><%= LOCALE_EXT %></span>.</small></h4>
+					<% } else { %>
+						<h4><small>You still need to set the <span class="label label-default">LOCALE_EXT</span> ENV variable.</small></h4>
+					<% } %>
+				</div>
+			</div>
+			
 			<hr>
 			
 			<div class="row">

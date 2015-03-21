@@ -42,6 +42,9 @@ module.exports = function () {
 	 * left over clone, we want to start fresh whenever the server is started.
 	 */
 	var checkout = function () {
+		cloneError = false;
+		cloned = false;
+		
 		return clear()
 			.then(function () {
 				var defer = q.defer();
@@ -77,6 +80,8 @@ module.exports = function () {
 			TRANSIFEX_USERNAME: process.env.TRANSIFEX_USERNAME,
 			TRANSIFEX_PASSWORD: Boolean(process.env.TRANSIFEX_PASSWORD),
 			GIT_REPO_URL: process.env.GIT_REPO_URL,
+			LOCALE_DIR: process.env.LOCALE_DIR,
+			LOCALE_EXT: process.env.LOCALE_EXT,
 			cloned: cloned,
 			cloneError: cloneError,
 			lastAttempt: lastAttempt
