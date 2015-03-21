@@ -88,6 +88,42 @@ describe('Index', function () {
 				}
 			}
 		],
+		GIT_NAME: [
+			{
+				value: '',
+				specs: function () {
+					it('should complain about missing GIT_NAME', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">GIT_NAME</span> ENV variable.');
+					});
+				}
+			},
+			{
+				value: 'chesley_get',
+				specs: function () {
+					it('should say GIT_NAME is okay and show what it is set to', function () {
+						expect(response.text).to.contain('Set to <span class="label label-default">chesley_get</span>.');
+					});
+				}
+			}
+		],
+		GIT_EMAIL: [
+			{
+				value: '',
+				specs: function () {
+					it('should complain about missing GIT_EMAIL', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">GIT_EMAIL</span> ENV variable.');
+					});
+				}
+			},
+			{
+				value: 'chesley_get@example.com',
+				specs: function () {
+					it('should say GIT_EMAIL is okay and show what it is set to', function () {
+						expect(response.text).to.contain('Set to <span class="label label-default">chesley_get@example.com</span>.');
+					});
+				}
+			}
+		],
 		LOCALE_DIR: [
 			{
 				value: '',

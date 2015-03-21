@@ -80,6 +80,8 @@ module.exports = function () {
 			TRANSIFEX_USERNAME: process.env.TRANSIFEX_USERNAME,
 			TRANSIFEX_PASSWORD: Boolean(process.env.TRANSIFEX_PASSWORD),
 			GIT_REPO_URL: process.env.GIT_REPO_URL,
+			GIT_NAME: process.env.GIT_NAME,
+			GIT_EMAIL: process.env.GIT_EMAIL,
 			LOCALE_DIR: process.env.LOCALE_DIR,
 			LOCALE_EXT: process.env.LOCALE_EXT,
 			cloned: cloned,
@@ -128,16 +130,24 @@ module.exports = function () {
 						}
 						
 						// Commit updated translation file to repo and push it to remote
-						exec('cd ' + cloneDir + ' && git add ' + localeFile + ' && git commit -m "Updated ' + fileName + ' with Transifex" && git push ' + process.env.GIT_REPO_URL + ' master', function (err) {
-							if (err) {
-								lastAttempt = false;
-								return next(err);
+						exec(
+							'cd ' + cloneDir + ' && ' +
+							'git config user.name "' + process.env.GIT_NAME + '" && ' +
+							'git config user.email "' + process.env.GIT_EMAIL + '" && ' +
+							'git add ' + localeFile + ' && ' +
+							'git commit -m "Updated ' + fileName + ' by Transifex" && ' +
+							'git push ' + process.env.GIT_REPO_URL + ' master',
+							function (err) {
+								if (err) {
+									lastAttempt = false;
+									return next(err);
+								}
+								
+								lastAttempt = fileName;
+								console.log('Updated ' + fileName + ' at ' + new Date());
+								res.status(204).end();
 							}
-							
-							lastAttempt = fileName;
-							console.log('Updated ' + fileName);
-							res.status(204).end();
-						});
+						);
 					});
 				});
 			})

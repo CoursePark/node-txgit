@@ -23,6 +23,14 @@
 		"LOCALE_EXT": {
 			"description": "The extension you want to use for the translation file.",
 			"value": ".l20n"
+		},
+		"GIT_NAME": {
+			"description": "The name used for the git commits.",
+			"value": ""
+		},
+		"GIT_EMAIL": {
+			"description": "The email used for the git commits.",
+			"value": ""
 		}
 	}
 }

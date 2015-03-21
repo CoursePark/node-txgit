@@ -107,6 +107,52 @@
 			<div class="row">
 				<div class="col-md-6">
 					<h4>
+						<% if (GIT_NAME) { %>
+							<span class="label label-success">Success</span>
+						<% } else { %>
+							<span class="label label-danger">Missing</span>
+						<% } %>
+						<div class="visible-xs">
+							<br>
+						</div>
+						GIT_NAME
+					</h4>
+				</div>
+				<div class="col-md-6">
+					<% if (GIT_NAME) { %>
+						<h4><small>Set to <span class="label label-default"><%= GIT_NAME %></span>.</small></h4>
+					<% } else { %>
+						<h4><small>You still need to set the <span class="label label-default">GIT_NAME</span> ENV variable.</small></h4>
+					<% } %>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<h4>
+						<% if (GIT_EMAIL) { %>
+							<span class="label label-success">Success</span>
+						<% } else { %>
+							<span class="label label-danger">Missing</span>
+						<% } %>
+						<div class="visible-xs">
+							<br>
+						</div>
+						GIT_EMAIL
+					</h4>
+				</div>
+				<div class="col-md-6">
+					<% if (GIT_EMAIL) { %>
+						<h4><small>Set to <span class="label label-default"><%= GIT_EMAIL %></span>.</small></h4>
+					<% } else { %>
+						<h4><small>You still need to set the <span class="label label-default">GIT_EMAIL</span> ENV variable.</small></h4>
+					<% } %>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<h4>
 						<% if (LOCALE_DIR) { %>
 							<span class="label label-success">Success</span>
 						<% } else { %>
