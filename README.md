@@ -1,4 +1,5 @@
-# node-txgit
+![App Logo](https://raw.githubusercontent.com/CoursePark/node-txgit/master/app/media/logo-small.png) node-txgit
+=========================
 Micro node app for listening to Transifex web hooks, automatically committing it to git and pushing to a remote.
 
 [![Build Status](https://travis-ci.org/CoursePark/node-txgit.svg?branch=master)](https://travis-ci.org/CoursePark/node-txgit)
