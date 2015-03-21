@@ -17,14 +17,6 @@
 			"description": "Your git repo url. Should include credentials if it's a private repo.",
 			"value": ""
 		},
-		"LOCALE_DIR": {
-			"description": "The directory where the locale files will be saved within the repo.",
-			"value": ""
-		},
-		"LOCALE_EXT": {
-			"description": "The extension you want to use for the translation file.",
-			"value": ".l20n"
-		},
 		"GIT_NAME": {
 			"description": "The name used for the git commits.",
 			"value": ""
@@ -32,6 +24,14 @@
 		"GIT_EMAIL": {
 			"description": "The email used for the git commits.",
 			"value": ""
+		},
+		"LOCALE_DIR": {
+			"description": "The directory where the locale files will be saved within the repo.",
+			"value": ""
+		},
+		"LOCALE_EXT": {
+			"description": "The extension you want to use for the translation file.",
+			"value": ".l20n"
 		}
 	}
 }
