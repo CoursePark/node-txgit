@@ -87,6 +87,7 @@ module.exports = function () {
 			GIT_NAME: process.env.GIT_NAME,
 			GIT_EMAIL: process.env.GIT_EMAIL,
 			LOCALE_DIR: process.env.LOCALE_DIR,
+			LOCALE_SOURCE: process.env.LOCALE_SOURCE,
 			LOCALE_EXT: process.env.LOCALE_EXT,
 			cloned: cloned,
 			cloneError: cloneError,

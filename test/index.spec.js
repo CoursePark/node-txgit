@@ -26,6 +26,7 @@ describe('Index', function () {
 		delete process.env.TRANSIFEX_PASSWORD;
 		process.env.GIT_REPO_URL = 'https://example.com/repo';
 		delete process.env.LOCALE_DIR;
+		delete process.env.LOCALE_SOURCE;
 		delete process.env.LOCALE_EXT;
 	});
 	
@@ -137,6 +138,24 @@ describe('Index', function () {
 				value: 'locale',
 				specs: function () {
 					it('should say LOCALE_DIR is okay and show what it is set to', function () {
+						expect(response.text).to.contain('Set to <span class="label label-default">locale</span>.');
+					});
+				}
+			}
+		],
+		LOCALE_SOURCE: [
+			{
+				value: '',
+				specs: function () {
+					it('should complain about missing LOCALE_SOURCE', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">LOCALE_SOURCE</span> ENV variable.');
+					});
+				}
+			},
+			{
+				value: 'locale',
+				specs: function () {
+					it('should say LOCALE_SOURCE is okay and show what it is set to', function () {
 						expect(response.text).to.contain('Set to <span class="label label-default">locale</span>.');
 					});
 				}
