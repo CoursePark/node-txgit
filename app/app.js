@@ -98,13 +98,17 @@ module.exports = function () {
 				// If body is empty, everything is wrong!
 				if (Object.keys(req.body).length === 0) {
 					lastAttempt = false;
-					return res.status(400).send('Invalid body.');
+					var msg = 'Invalid body: ' + req.body;
+					console.error(msg);
+					return res.status(400).send(msg);
 				}
 				
 				// Must provide us with all the information we need
 				if (!req.body.project || !req.body.resource || !req.body.language) {
 					lastAttempt = false;
-					return res.status(400).send('Required params missing. Must have "project", "resource" and "language".');
+					var msg = 'Required params missing. Must have "project", "resource" and "language".';
+					console.error(msg);
+					return res.status(400).send(msg);
 				}
 				
 				// TODO: validate transifex signature
