@@ -98,7 +98,7 @@ module.exports = function () {
 				// If body is empty, everything is wrong!
 				if (Object.keys(req.body).length === 0) {
 					lastAttempt = false;
-					var msg = 'Invalid body: ' + req.body;
+					var msg = 'Invalid body: ' + JSON.stringify(req.body);
 					console.error(msg);
 					return res.status(400).send(msg);
 				}
