@@ -13,7 +13,10 @@ module.exports = function () {
 	var cloneDir = __dirname + '/clone';
 	
 	var app = express();
-	app.use(bodyParser.json());
+	
+	// Parse application/x-www-form-urlencoded
+	app.use(bodyParser.urlencoded({extended: false}));
+	
 	app.use('/media', express.static(__dirname + '/media'));
 	app.set('views', path.join(__dirname, '/views'));
 	app.set('view engine', 'ejs');
@@ -92,23 +95,25 @@ module.exports = function () {
 	});
 	
 	app.post('/transifex', function (req, res, next) {
+		var errorMsg;
+		
 		// Do a fresh checkout every time (lazyman reset)
 		checkout()
 			.then(function () {
 				// If body is empty, everything is wrong!
 				if (Object.keys(req.body).length === 0) {
 					lastAttempt = false;
-					var msg = 'Invalid body: ' + JSON.stringify(req.body);
-					console.error(msg);
-					return res.status(400).send(msg);
+					errorMsg = 'Invalid body: ' + JSON.stringify(req.body);
+					console.error(errorMsg);
+					return res.status(400).send(errorMsg);
 				}
 				
 				// Must provide us with all the information we need
 				if (!req.body.project || !req.body.resource || !req.body.language) {
 					lastAttempt = false;
-					var msg = 'Required params missing. Must have "project", "resource" and "language".';
-					console.error(msg);
-					return res.status(400).send(msg);
+					errorMsg = 'Required params missing. Must have "project", "resource" and "language". Was given: ' + JSON.stringify(req.body);
+					console.error(errorMsg);
+					return res.status(400).send(errorMsg);
 				}
 				
 				// TODO: validate transifex signature
