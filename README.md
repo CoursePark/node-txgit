@@ -33,3 +33,4 @@ To execute all the tests, just run:
 
 ```
 npm test
+```
