@@ -89,6 +89,24 @@ describe('Index', function () {
 				}
 			}
 		],
+		TRANSIFEX_FORMAT: [
+			{
+				value: '',
+				specs: function () {
+					it('should complain about missing TRANSIFEX_FORMAT', function () {
+						expect(response.text).to.contain('You still need to set the <span class="label label-default">TRANSIFEX_FORMAT</span> ENV variable.');
+					});
+				}
+			},
+			{
+				value: 'DTD',
+				specs: function () {
+					it('should say TRANSIFEX_FORMAT is okay and show what it is set to', function () {
+						expect(response.text).to.contain('Set to <span class="label label-default">DTD</span>.');
+					});
+				}
+			}
+		],
 		GIT_NAME: [
 			{
 				value: '',
@@ -153,10 +171,10 @@ describe('Index', function () {
 				}
 			},
 			{
-				value: 'locale',
+				value: 'en',
 				specs: function () {
 					it('should say LOCALE_SOURCE is okay and show what it is set to', function () {
-						expect(response.text).to.contain('Set to <span class="label label-default">locale</span>.');
+						expect(response.text).to.contain('Set to <span class="label label-default">en</span>.');
 					});
 				}
 			}

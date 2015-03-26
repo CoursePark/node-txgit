@@ -1,14 +1,15 @@
 'use strict';
 
+var bodyParser = require('body-parser');
+var dtdToL20nConverter = require('./lib/dtd-to-l20n-converter');
+var exec = require('child_process').exec;
+var express = require('express');
+var fs = require('fs');
+var path = require('path');
+var q = require('q');
+var Transifex = require('transifex');
+
 module.exports = function () {
-	var bodyParser = require('body-parser');
-	var exec = require('child_process').exec;
-	var express = require('express');
-	var fs = require('fs');
-	var path = require('path');
-	var q = require('q');
-	var Transifex = require('transifex');
-	
 	var cloned, cloneError, lastAttempt;
 	var cloneDir = __dirname + '/clone';
 	
@@ -82,6 +83,7 @@ module.exports = function () {
 		res.render('index', {
 			host: req.get('host'),
 			TRANSIFEX_USERNAME: process.env.TRANSIFEX_USERNAME,
+			TRANSIFEX_FORMAT: process.env.TRANSIFEX_FORMAT,
 			TRANSIFEX_PASSWORD: Boolean(process.env.TRANSIFEX_PASSWORD),
 			GIT_REPO_URL: process.env.GIT_REPO_URL,
 			GIT_NAME: process.env.GIT_NAME,
@@ -138,6 +140,11 @@ module.exports = function () {
 					if (err) {
 						lastAttempt = false;
 						return next(err);
+					}
+					
+					// Convert from DTD format to l20n if needed
+					if (process.env.TRANSIFEX_FORMAT.toUpperCase() === 'DTD' && process.env.LOCALE_EXT === '.l20n') {
+						data = dtdToL20nConverter(data);
 					}
 					
 					var fileName = req.body.language + process.env.LOCALE_EXT;

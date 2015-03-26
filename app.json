@@ -13,6 +13,10 @@
 			"description": "Your Transifex password.",
 			"value": ""
 		},
+		"TRANSIFEX_FORMAT": {
+			"description": "The language format you are expecting from Transifex.",
+			"value": "DTD"
+		},
 		"GIT_REPO_URL": {
 			"description": "Your git repo url. Should include credentials if it's a private repo.",
 			"value": ""

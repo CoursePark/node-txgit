@@ -15,6 +15,7 @@ First just deploy a free instance of the app on heroku using the button then jus
 1. Set `GIT_REPO_URL` to the repo url. If credentials are required provide them via basic auth.
 	- For example: `https://username:password@github.com/your-name/your-repo`
 1. Set `TRANSIFEX_USERNAME` and `TRANSIFEX_PASSWORD` so the app can pull down the translations needed.
+1. Set `TRANSIFEX_FORMAT` to the language format you are expecting from Transifex.
 1. Set `LOCALE_DIR` to the path relative to your repo where your want your locale files committed into.
 1. Set `LOCALE_SOURCE` the source language name so we can ignore requests about it. We only want to save updates to translations.
 1. Set `LOCALE_EXT` to be the the file extention used for the locale files that are created.
