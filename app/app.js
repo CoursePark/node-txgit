@@ -112,9 +112,9 @@ module.exports = function () {
 				}
 				
 				// Must provide us with all the information we need
-				if (!req.body.project || !req.body.resource || !req.body.language) {
+				if (!req.body.project || !req.body.resource || !req.body.language || !req.body.reviewed) {
 					lastAttempt = false;
-					errorMsg = 'Required params missing. Must have "project", "resource" and "language". Was given: ' + JSON.stringify(req.body);
+					errorMsg = 'Required params missing. Must have "project", "resource", "language" and "reviewed". Was given: ' + JSON.stringify(req.body);
 					console.error(errorMsg);
 					return res.status(400).send(errorMsg);
 				}
@@ -137,63 +137,54 @@ module.exports = function () {
 					credential: process.env.TRANSIFEX_USERNAME + ':' + process.env.TRANSIFEX_PASSWORD
 				});
 				
-				// Only get updated translations if it's 100% reviewed
-				transifex.statisticsMethods(req.body.project, req.body.resource, req.body.language, function (err, stats) {
+				// Must be 100% reviewed before committing
+				if (req.body.reviewed !== '100') {
+					lastAttempt = false;
+					return next(
+						'Must be 100% reviewed to commit. ' +
+						'"' + req.body.language + '" is only ' + req.body.reviewed + ' reviewed. '
+					);
+				}
+				
+				// Try to get the updated translations
+				transifex.translationInstanceMethod(req.body.project, req.body.resource, req.body.language, {mode: 'reviewed'}, function (err, data) {
 					if (err) {
 						lastAttempt = false;
 						return next(err);
 					}
 					
-					// Must be 100% reviewed before committing
-					if (stats.reviewed_percentage !== '100%') {
-						lastAttempt = false;
-						return next(
-							'Must be 100% reviewed to deploy. ' +
-							'"' + req.body.language + '" is only ' + stats.reviewed_percentage + ' reviewed. ' +
-							'There are ' + stats.untranslated_words + ' untranslated words left.'
-						);
+					// Convert from DTD format to l20n if needed
+					if (process.env.TRANSIFEX_FORMAT.toUpperCase() === 'DTD' && process.env.LOCALE_EXT === '.l20n') {
+						data = dtdToL20nConverter(data);
 					}
 					
-					// Try to get the updated translations
-					transifex.translationInstanceMethod(req.body.project, req.body.resource, req.body.language, {mode: 'reviewed'}, function (err, data) {
+					var fileName = req.body.language + process.env.LOCALE_EXT;
+					var localeFile = path.join(cloneDir, process.env.LOCALE_DIR, fileName);
+					fs.writeFile(localeFile, data, function (err) {
 						if (err) {
 							lastAttempt = false;
 							return next(err);
 						}
 						
-						// Convert from DTD format to l20n if needed
-						if (process.env.TRANSIFEX_FORMAT.toUpperCase() === 'DTD' && process.env.LOCALE_EXT === '.l20n') {
-							data = dtdToL20nConverter(data);
-						}
-						
-						var fileName = req.body.language + process.env.LOCALE_EXT;
-						var localeFile = path.join(cloneDir, process.env.LOCALE_DIR, fileName);
-						fs.writeFile(localeFile, data, function (err) {
-							if (err) {
-								lastAttempt = false;
-								return next(err);
-							}
-							
-							// Commit updated translation file to repo and push it to remote
-							exec(
-								'cd ' + cloneDir + ' && ' +
-								'git config user.name "' + process.env.GIT_NAME + '" && ' +
-								'git config user.email "' + process.env.GIT_EMAIL + '" && ' +
-								'git add ' + localeFile + ' && ' +
-								'git commit -m "Updated ' + fileName + ' by Transifex" && ' +
-								'git push ' + process.env.GIT_REPO_URL + ' master',
-								function (err) {
-									if (err) {
-										lastAttempt = false;
-										return next(err);
-									}
-									
-									lastAttempt = fileName;
-									console.log('Updated ' + fileName + ' at ' + new Date());
-									res.status(204).end();
+						// Commit updated translation file to repo and push it to remote
+						exec(
+							'cd ' + cloneDir + ' && ' +
+							'git config user.name "' + process.env.GIT_NAME + '" && ' +
+							'git config user.email "' + process.env.GIT_EMAIL + '" && ' +
+							'git add ' + localeFile + ' && ' +
+							'git commit -m "Updated ' + fileName + ' by Transifex" && ' +
+							'git push ' + process.env.GIT_REPO_URL + ' master',
+							function (err) {
+								if (err) {
+									lastAttempt = false;
+									return next(err);
 								}
-							);
-						});
+								
+								lastAttempt = fileName;
+								console.log('Updated ' + fileName + ' at ' + new Date());
+								res.status(204).end();
+							}
+						);
 					});
 				});
 			})
