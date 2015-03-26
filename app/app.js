@@ -142,7 +142,7 @@ module.exports = function () {
 					lastAttempt = false;
 					return next(
 						'Must be 100% reviewed to commit. ' +
-						'"' + req.body.language + '" is only ' + req.body.reviewed + ' reviewed. '
+						'"' + req.body.language + '" is only ' + req.body.reviewed + '% reviewed. '
 					);
 				}
 				
