@@ -137,45 +137,63 @@ module.exports = function () {
 					credential: process.env.TRANSIFEX_USERNAME + ':' + process.env.TRANSIFEX_PASSWORD
 				});
 				
-				// Try to get the updated translations
-				transifex.translationInstanceMethod(req.body.project, req.body.resource, req.body.language, {mode: 'reviewed'}, function (err, data) {
+				// Only get updated translations if it's 100% reviewed
+				transifex.statisticsMethods(req.body.project, req.body.resource, req.body.language, function (err, stats) {
 					if (err) {
 						lastAttempt = false;
 						return next(err);
 					}
 					
-					// Convert from DTD format to l20n if needed
-					if (process.env.TRANSIFEX_FORMAT.toUpperCase() === 'DTD' && process.env.LOCALE_EXT === '.l20n') {
-						data = dtdToL20nConverter(data);
+					// Must be 100% reviewed before committing
+					if (stats.reviewed_percentage !== '100%') {
+						lastAttempt = false;
+						return next(
+							'Must be 100% reviewed to deploy. ' +
+							'"' + req.body.language + '" is only ' + stats.reviewed_percentage + ' reviewed. ' +
+							'There are ' + stats.untranslated_words + ' untranslated words left.'
+						);
 					}
 					
-					var fileName = req.body.language + process.env.LOCALE_EXT;
-					var localeFile = path.join(cloneDir, process.env.LOCALE_DIR, fileName);
-					fs.writeFile(localeFile, data, function (err) {
+					// Try to get the updated translations
+					transifex.translationInstanceMethod(req.body.project, req.body.resource, req.body.language, {mode: 'reviewed'}, function (err, data) {
 						if (err) {
 							lastAttempt = false;
 							return next(err);
 						}
 						
-						// Commit updated translation file to repo and push it to remote
-						exec(
-							'cd ' + cloneDir + ' && ' +
-							'git config user.name "' + process.env.GIT_NAME + '" && ' +
-							'git config user.email "' + process.env.GIT_EMAIL + '" && ' +
-							'git add ' + localeFile + ' && ' +
-							'git commit -m "Updated ' + fileName + ' by Transifex" && ' +
-							'git push ' + process.env.GIT_REPO_URL + ' master',
-							function (err) {
-								if (err) {
-									lastAttempt = false;
-									return next(err);
-								}
-								
-								lastAttempt = fileName;
-								console.log('Updated ' + fileName + ' at ' + new Date());
-								res.status(204).end();
+						// Convert from DTD format to l20n if needed
+						if (process.env.TRANSIFEX_FORMAT.toUpperCase() === 'DTD' && process.env.LOCALE_EXT === '.l20n') {
+							data = dtdToL20nConverter(data);
+						}
+						
+						var fileName = req.body.language + process.env.LOCALE_EXT;
+						var localeFile = path.join(cloneDir, process.env.LOCALE_DIR, fileName);
+						fs.writeFile(localeFile, data, function (err) {
+							if (err) {
+								lastAttempt = false;
+								return next(err);
 							}
-						);
+							
+							// Commit updated translation file to repo and push it to remote
+							exec(
+								'cd ' + cloneDir + ' && ' +
+								'git config user.name "' + process.env.GIT_NAME + '" && ' +
+								'git config user.email "' + process.env.GIT_EMAIL + '" && ' +
+								'git add ' + localeFile + ' && ' +
+								'git commit -m "Updated ' + fileName + ' by Transifex" && ' +
+								'git push ' + process.env.GIT_REPO_URL + ' master',
+								function (err) {
+									if (err) {
+										lastAttempt = false;
+										return next(err);
+									}
+									
+									lastAttempt = fileName;
+									console.log('Updated ' + fileName + ' at ' + new Date());
+									res.status(204).end();
+								}
+							);
+						});
 					});
 				});
 			})
