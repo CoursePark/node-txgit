@@ -127,6 +127,8 @@ module.exports = function () {
 					return res.status(400).send(errorMsg);
 				}
 				
+				console.log('Valid request received with body: ' + JSON.stringify(req.body));
+				
 				// TODO: validate transifex signature
 				
 				// Setup transifex connection
