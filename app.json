@@ -29,6 +29,10 @@
 			"description": "The directory where the locale files will be saved within the repo.",
 			"value": ""
 		},
+		"LOCALE_SOURCE": {
+			"description": "This is the source locale name so we can ignore requests about it.",
+			"value": ""
+		},
 		"LOCALE_EXT": {
 			"description": "The extension you want to use for the translation file.",
 			"value": ".l20n"

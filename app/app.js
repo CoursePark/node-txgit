@@ -116,6 +116,14 @@ module.exports = function () {
 					return res.status(400).send(errorMsg);
 				}
 				
+				// Ignore if source language
+				if (process.env.LOCALE_SOURCE === req.body.language) {
+					lastAttempt = false;
+					errorMsg = 'Ignoring source language update: ' + req.body.language;
+					console.error(errorMsg);
+					return res.status(400).send(errorMsg);
+				}
+				
 				// TODO: validate transifex signature
 				
 				// Setup transifex connection
