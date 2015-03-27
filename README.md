@@ -13,7 +13,8 @@ First just deploy a free instance of the app on heroku using the button then jus
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 1. Set `GIT_REPO_URL` to the repo url. If credentials are required provide them via basic auth.
-	- For example: `https://username:password@github.com/your-name/your-repo`
+	- NOTE: If you place {{TRANSIFEX_PROJECT}} or {{TRANSIFEX_RESOURCE}} in the url they will be dynamically replaced with the return from Transifex.
+		- For example: `https://username:password@github.com/{{TRANSIFEX_PROJECT}}/{{TRANSIFEX_RESOURCE}}`
 1. Set `TRANSIFEX_USERNAME` and `TRANSIFEX_PASSWORD` so the app can pull down the translations needed.
 1. Set `TRANSIFEX_FORMAT` to the language format you are expecting from Transifex.
 1. Set `LOCALE_DIR` to the path relative to your repo where your want your locale files committed into.

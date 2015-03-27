@@ -18,7 +18,7 @@
 			"value": "DTD"
 		},
 		"GIT_REPO_URL": {
-			"description": "Your git repo url. Should include credentials if it's a private repo.",
+			"description": "Your git repo url. Should include credentials if it's a private repo. If you place {{TRANSIFEX_PROJECT}} or {{TRANSIFEX_RESOURCE}} in the url they will be dynamically replaced with the return from Transifex.",
 			"value": ""
 		},
 		"GIT_NAME": {

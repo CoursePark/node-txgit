@@ -253,7 +253,7 @@
 						<% } else if (cloneError) { %>
 							<span class="label label-danger">Error</span>
 						<% } else { %>
-							<span class="label label-warning">In Progress</span>
+							<span class="label label-warning">No Attempts</span>
 						<% } %>
 						<div class="visible-xs">
 							<br>
@@ -267,7 +267,7 @@
 					<% } else if (cloneError) { %>
 						<h4><small>There was an error trying to clone the repo. Check your server logs for more information.</small></h4>
 					<% } else { %>
-						<h4><small>The repo cloning is currently in progress. <a href="#" onclick="location.reload()">Refresh to update status.</a></small></h4>
+						<h4><small>No repo cloning has been attempted yet.</small></h4>
 					<% } %>
 				</div>
 			</div>
@@ -296,6 +296,23 @@
 					<% } else { %>
 						<h4><small>No update has been attempted yet.</h4>
 					<% } %>
+				</div>
+			</div>
+			
+			<hr>
+			
+			<div class="row">
+				<div class="col-xs-12">
+					<h3>Setup</h3>
+					<ol>
+						<li>
+							<p>Add a <a href="http://docs.transifex.com/developer/integrations/#web-hooks">webhook</a> in Transifex that points to:</p>
+							<div class="alert alert-info" role="alert">https://<%= host %>/transifex</div>
+						</li>
+						<li>
+							<p>Transifex calls the <a href="http://docs.transifex.com/developer/integrations/#web-hooks">webhook</a> whenever the translation for a file is completed or fully reviewed.</p>
+						</li>
+					</ol>
 				</div>
 			</div>
 			
