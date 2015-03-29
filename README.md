@@ -22,7 +22,7 @@ First just deploy a free instance of the app on heroku using the button then jus
 1. Set `LOCALE_EXT` to be the the file extention used for the locale files that are created.
 1. Set `GIT_NAME` and `GIT_EMAIL` which will be used when committing to the repo.
 1. Finally add a webhook to your Transifex project that points to the `/transifex` endpoint of your app instance
-	- For example: `http://your-transifex-webhook-receiver.herokuapp.com/transifex`
+	- For example: `https://your-transifex-webhook-receiver.herokuapp.com/transifex`
 
 # Running Locally
 
