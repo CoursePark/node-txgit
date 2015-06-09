@@ -171,7 +171,9 @@ module.exports = function () {
 					var currentRepoUrl = getRepoUrl(req.body.project, req.body.resource);
 					var currentCloneDir = getCloneDir(req.body.project, req.body.resource);
 					
-					var fileName = req.body.language + process.env.LOCALE_EXT;
+					// Generate ISO 639-1 language code for filename
+					var fileName = req.body.language.replace('_', '-') + process.env.LOCALE_EXT;
+					
 					var localeFile = path.join(currentCloneDir, process.env.LOCALE_DIR, fileName);
 					fs.writeFile(localeFile, data, function (err) {
 						if (err) {
