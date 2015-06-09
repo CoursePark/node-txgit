@@ -1,7 +1,7 @@
 {
 	"name": "node-txgit",
 	"description": "Micro node app for listening to Transifex web hooks, automatically committing it to git and pushing to a remote.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"keywords": [
 		"bitbucket",
 		"git",
